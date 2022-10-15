@@ -1,0 +1,196 @@
+openapi: 3.1.0
+x-stoplight:
+  id: c1yu0u08jvja9
+info:
+  title: version2
+  version: '1.0'
+servers:
+  - url: 'http://localhost:3000'
+paths:
+  '/notes/{noteId}':
+    parameters:
+      - schema:
+          type: string
+        name: noteId
+        in: path
+        required: true
+    get:
+      summary: get note
+      tags:
+        - notes
+      responses: {}
+      operationId: get-notes-id
+      description: 指定した投稿を取得します。
+    delete:
+      summary: delete note
+      tags: []
+      responses: {}
+      operationId: delete-notes-id
+      description: 指定した投稿を削除します
+  '/notes/{noteId}/replies':
+    parameters:
+      - schema:
+          type: string
+        name: noteId
+        in: path
+        required: true
+    get:
+      summary: get replies
+      tags:
+        - notes
+      responses: {}
+      operationId: get-notes-noteId-replies
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: sinceId
+          description: 指定すると、その投稿を基点としてより新しい投稿を取得します
+        - schema:
+            type: string
+          in: query
+          name: untilId
+          description: 指定すると、その投稿を基点としてより古い投稿を取得します
+        - schema:
+            type: number
+            minimum: 1
+            maximum: 100
+          in: query
+          name: limit
+          description: 取得する件数。デフォルトは10
+      description: 指定した投稿への返信を取得します。
+  '/notes/{noteId}/renotes':
+    parameters:
+      - schema:
+          type: string
+        name: noteId
+        in: path
+        required: true
+    get:
+      summary: get renotes
+      tags:
+        - notes
+      responses: {}
+      operationId: get-notes-noteId-renotes
+      description: 指定した投稿のRenote一覧を取得します。
+      parameters:
+        - schema:
+            type: number
+            minimum: 1
+            maximum: 100
+          in: query
+          name: limit
+          description: 取得する件数。デフォルトは10
+        - schema:
+            type: string
+          in: query
+          name: sinceId
+        - schema:
+            type: string
+          in: query
+          name: "untilId\t"
+  '/notes/{noteId}/reactions':
+    parameters:
+      - schema:
+          type: string
+        name: noteId
+        in: path
+        required: true
+    post:
+      summary: add reaction
+      tags:
+        - notes
+      responses: {}
+      operationId: post-notes-noteId-reactions
+      description: 指定した投稿にリアクションします。
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reaction:
+                  type: string
+                  description: リアクション
+                dislike:
+                  type: string
+                  description: きらい
+    delete:
+      summary: remove reaction
+      tags:
+        - notes
+      responses: {}
+      operationId: delete-notes-noteId-reactions
+      description: 指定した投稿へのリアクションを取り消します。
+    get:
+      summary: ''
+      operationId: get-notes-noteId-reactions
+      responses:
+        '200':
+          description: OK
+      description: 指定した投稿のリアクション一覧を取得します。
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: type
+        - schema:
+            type: number
+            minimum: 1
+            maximum: 100
+          in: query
+          name: limit
+        - schema:
+            type: number
+          in: query
+          name: offset
+        - schema:
+            type: string
+          in: query
+          name: sinceId
+        - schema:
+            type: string
+          in: query
+          name: untilId
+components:
+  schemas:
+    User:
+      title: User
+      type: object
+      description: ''
+      examples:
+        - id: 142
+          firstName: Alice
+          lastName: Smith
+          email: alice.smith@gmail.com
+          dateOfBirth: '1997-10-31'
+          emailVerified: true
+          signUpDate: '2019-08-24'
+      properties:
+        id:
+          type: integer
+          description: Unique identifier for the given user.
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+          format: email
+        dateOfBirth:
+          type: string
+          format: date
+          example: '1997-10-31'
+        emailVerified:
+          type: boolean
+          description: Set to true if the user's email has been verified.
+        createDate:
+          type: string
+          format: date
+          description: The date that the user was created.
+      required:
+        - id
+        - firstName
+        - lastName
+        - email
+        - emailVerified
