@@ -65,6 +65,15 @@ paths:
           name: limit
           description: 取得する件数。デフォルトは10
       description: 指定した投稿への返信を取得します。
+    post:
+      summary: ''
+      operationId: post-notes-noteId-replies
+      responses:
+        '200':
+          description: OK
+      description: 指定した投稿に返信します
+      requestBody:
+        $ref: '#/components/requestBodies/PostNote'
   '/notes/{noteId}/renotes':
     parameters:
       - schema:
@@ -95,6 +104,14 @@ paths:
             type: string
           in: query
           name: "untilId\t"
+    post:
+      summary: ''
+      operationId: post-notes-noteId-renotes
+      responses:
+        '200':
+          description: OK
+      requestBody:
+        $ref: '#/components/requestBodies/PostNote'
   '/notes/{noteId}/reactions':
     parameters:
       - schema:
@@ -119,7 +136,7 @@ paths:
                   type: string
                   description: リアクション
                 dislike:
-                  type: string
+                  type: boolean
                   description: きらい
     delete:
       summary: remove reaction
@@ -158,6 +175,43 @@ paths:
             type: string
           in: query
           name: untilId
+  '/channels/{channelId}':
+    parameters:
+      - schema:
+          type: string
+        name: channelId
+        in: path
+        required: true
+    post:
+      summary: send message for channel
+      tags:
+        - channels
+      responses: {}
+      operationId: post-channel-channelId
+      requestBody:
+        $ref: '#/components/requestBodies/PostNote'
+      description: チャンネルへノートを投稿します
+  '/notes/{noteId}/favorite':
+    parameters:
+      - schema:
+          type: string
+        name: noteId
+        in: path
+        required: true
+    delete:
+      summary: remove favorite
+      tags:
+        - notes
+      responses: {}
+      operationId: delete-notes-noteId-favorite
+      description: 指定した投稿のお気に入りを解除します。
+    post:
+      summary: make favorite
+      tags:
+        - notes
+      responses: {}
+      operationId: post-notes-noteId-favorite
+      description: 指定した投稿をお気に入りに登録します。
 components:
   schemas:
     User:
@@ -258,6 +312,7 @@ components:
           type: string
         emojis:
           type: string
+      x-internal: false
     NoteUser:
       title: NoteUser
       x-stoplight:
@@ -330,3 +385,99 @@ components:
           type: string
         properties:
           type: string
+    CreatePoll:
+      title: CreatePoll
+      x-stoplight:
+        id: 9a8v52stm5uo7
+      type: object
+      properties:
+        choices:
+          type: array
+          description: アンケートの選択肢
+          items:
+            type: string
+        multiple:
+          type:
+            - boolean
+            - 'null'
+          description: 複数回答を許可するか否か
+        expiresAt:
+          type:
+            - 'null'
+            - number
+          description: いつ終わるか
+        expiredAfter:
+          type:
+            - 'null'
+            - number
+          description: 何秒後に終わるか
+    Geo:
+      title: Geo
+      x-stoplight:
+        id: kv3l46wfk9rfh
+      type: object
+      properties:
+        coordinates:
+          type: array
+          items:
+            type:
+              - string
+              - 'null'
+        altitude:
+          type: number
+        accuracy:
+          type: number
+        altitudeAccuracy:
+          type: number
+        heading:
+          type: number
+        speed:
+          type: number
+  requestBodies:
+    PostNote:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              visibility:
+                type: array
+                description: 投稿の公開範囲
+                items:
+                  type: string
+              visibleUserIds:
+                type: array
+                description: (投稿の公開範囲が specified の場合)投稿を閲覧できるユーザー
+                items:
+                  type: string
+              text:
+                type: string
+                description: 投稿内容
+              cw:
+                type: string
+                description: コンテンツの警告。このパラメータを指定すると設定したテキストで投稿のコンテンツを隠す事が出来ます。
+              viaMobile:
+                type: boolean
+                description: モバイルデバイスからの投稿か否か。
+              localOnly:
+                type: boolean
+                description: ローカルへの投稿か否か。
+              extractMentions:
+                type: boolean
+                description: 本文からメンションを展開しないか否か。
+              extractHashtags:
+                type: boolean
+                description: |
+                  本文からハッシュタグを展開しないか否か。
+              extractEmojis:
+                type: boolean
+              geo:
+                $ref: '#/components/schemas/Geo'
+              fileIds:
+                type: array
+                description: |
+                  添付するファイル
+                items:
+                  type: string
+              poll:
+                $ref: '#/components/schemas/CreatePoll'
