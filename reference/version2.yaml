@@ -18,7 +18,13 @@ paths:
       summary: get note
       tags:
         - notes
-      responses: {}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Note'
       operationId: get-notes-id
       description: 指定した投稿を取得します。
     delete:
@@ -194,3 +200,133 @@ components:
         - lastName
         - email
         - emailVerified
+    Note:
+      title: Note
+      x-stoplight:
+        id: 5pb42iqlwc2ck
+      type: object
+      properties:
+        id:
+          type: string
+          description: ノートのId
+        createdAt:
+          type: string
+          description: ノートの作成日時
+        text:
+          type:
+            - string
+            - 'null'
+          description: ノートの内容
+        cw:
+          type:
+            - string
+            - 'null'
+          description: ノートに対する注意
+        user:
+          $ref: '#/components/schemas/NoteUser'
+        userId:
+          type: string
+          description: ノート作者のId
+        reply:
+          $ref: '#/components/schemas/Note'
+        replyId:
+          type: string
+        renote:
+          $ref: '#/components/schemas/Note'
+        renoteId:
+          type: string
+        files:
+          type: array
+          items:
+            $ref: '#/components/schemas/DriveFile'
+        fileIds:
+          type: array
+          items:
+            type: string
+        visibility:
+          type: string
+        myReaction:
+          type: string
+        reactions:
+          type: array
+          items:
+            type: object
+            properties:
+              string:
+                type: number
+        poll:
+          type: string
+        emojis:
+          type: string
+    NoteUser:
+      title: NoteUser
+      x-stoplight:
+        id: nannh5c1apotg
+      type: object
+      properties:
+        id:
+          type: string
+        host:
+          type:
+            - string
+            - 'null'
+        name:
+          type: string
+        onlineStatus:
+          type: string
+        avatarUrl:
+          type: string
+        avatarBlurhash:
+          type: string
+        emojis:
+          type: string
+        instance:
+          $ref: '#/components/schemas/LiteInstance'
+    LiteInstance:
+      title: LiteInstance
+      x-stoplight:
+        id: 938vhemi8kqeu
+      type: object
+      properties:
+        host:
+          type: string
+        name:
+          type: string
+        softwareName:
+          type: string
+        softwareversion:
+          type: string
+        iconUrl:
+          type: string
+        faviconUrl:
+          type: string
+        themeColor:
+          type: string
+    DriveFile:
+      title: DriveFile
+      x-stoplight:
+        id: urs7nk38s41f8
+      type: object
+      properties:
+        id:
+          type: string
+        createdAt:
+          type: string
+        isSensitive:
+          type: string
+        name:
+          type: string
+        thumbnailUrl:
+          type: string
+        url:
+          type: string
+        type:
+          type: string
+        size:
+          type: string
+        md5:
+          type: string
+        blurhash:
+          type: string
+        properties:
+          type: string
